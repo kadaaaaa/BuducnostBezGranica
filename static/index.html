@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interaktivna memorijska igra iz projekta Škola budućnosti – Samsung Challenge. Istraži kako Galaxy AI pomaže osobama s različitim poteškoćama kroz edukativnu igru.">
+<meta name="keywords" content="Samsung Challenge, Škola budućnosti, Galaxy AI, memorijska igra, inkluzija, pristupačnost, edukacija, AI tehnologija">
+<meta name="author" content="Elektrotehnička škola Zagreb">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://samsung.kada.works/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Budućnost bez granica – Samsung Challenge">
+<meta property="og:description" content="Spoji poteškoće s AI značajkama Galaxy uređaja i otkrij kako tehnologija briše barijere kroz interaktivnu igru.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://samsung.kada.works/">
+<meta property="og:image" content="./img/meta.png">
+<meta property="og:locale" content="hr_HR">
+<meta property="og:site_name" content="Škola budućnosti">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Budućnost bez granica – Samsung Challenge">
+<meta name="twitter:description" content="Interaktivna AI memorijska igra koja promovira inkluziju i pristupačnost.">
+<meta name="twitter:image" content="./img/meta.png">
+
+<!-- Theme / Mobile -->
+<meta name="theme-color" content="#1428A0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Škola budućnosti, Samsung Challenge – Budućnost bez granica</title>
+<link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --blue:#1428A0;
+    --blue-light:#1D7EED;
+    --blue-pale:#EEF2FF;
+    --dark:#07091A;
+    --card-bg:#FFFFFF;
+    --surface:#F5F7FF;
+    --border:#DDE3F5;
+    --font:'Outfit',system-ui,sans-serif;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font);
+    background:var(--dark);
+    min-height:100vh;
+    overflow-x:hidden;
+    color:#fff;
+  }
+
+  /* ── HERO ── */
+  .hero{
+    background:linear-gradient(140deg,#07091A 0%,#0D1B6E 55%,#1428A0 100%);
+    padding:48px 24px 36px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;top:-80px;right:-80px;
+    width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle,rgba(29,126,237,0.18) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .hero::after{
+    content:'';position:absolute;bottom:-100px;left:-50px;
+    width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(20,40,160,0.25) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .logo-row{
+    display:flex;align-items:center;justify-content:center;
+    gap:10px;margin-bottom:20px;
+  }
+  .logo-row span{
+    color:var(--blue-pale);
+    font-size:11px;letter-spacing:3.5px;text-transform:uppercase;
+  }
+  .logo-dot{width:6px;height:6px;background:rgba(255,255,255,0.6);border-radius:50%}
+  .hero h1{
+    font-size:clamp(32px,10vw,48px);font-weight:700;
+    line-height:1.15;margin-bottom:12px;
+  }
+  .hero h1 em{font-style:normal;color:#6AB4FF}
+  .hero p{
+    color:rgba(255,255,255,0.6);font-size:15px;
+    max-width:460px;margin:0 auto 24px;line-height:1.7;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:30px;padding:7px 18px;
+    color:rgba(255,255,255,0.8);font-size:13px;font-weight:500;
+  }
+
+  /* ── GAME AREA ── */
+  .game-wrap{
+    padding:28px 16px 48px;
+    max-width:580px;margin:0 auto;
+  }
+
+  /* score bar */
+  .score-bar{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:10px;margin-bottom:22px;
+  }
+  .stat{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px;padding:12px 10px;text-align:center;
+  }
+  .stat-val{font-size:22px;font-weight:700;color:#fff}
+  .stat-lbl{font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px}
+
+  /* grid */
+  .grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  }
+
+  /* card */
+  .card{
+    aspect-ratio:1;perspective:700px;
+    cursor:pointer;border:none;background:none;padding:0;
+    outline:none;
+  }
+  .card:focus-visible .card-inner{outline:3px solid #6AB4FF;outline-offset:3px;border-radius:14px}
+  .card-inner{
+    width:100%;height:100%;position:relative;
+    transform-style:preserve-3d;
+    transition:transform 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .card.flipped .card-inner,
+  .card.matched .card-inner{transform:rotateY(180deg)}
+
+  .card-front,.card-back{
+    position:absolute;inset:0;border-radius:14px;
+    backface-visibility:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card-front{
+    background:linear-gradient(135deg,#1428A0 0%,#1D7EED 100%);
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .card-front svg{opacity:0.25;width:28px;height:28px}
+
+  .card-back{
+    background:#fff;transform:rotateY(180deg);
+    flex-direction:column;gap:5px;padding:8px;
+    border:2px solid transparent;
+    transition:border-color 0.3s,background 0.3s;
+  }
+  .card.matched .card-back{
+    border-color:#1428A0;
+    background:var(--blue-pale);
+  }
+  .card-icon{font-size:clamp(24px,5.5vw,36px);line-height:1}
+  .card-label{
+    font-size:clamp(9px,1.9vw,11px);color:#444;
+    text-align:center;line-height:1.2;font-weight:600;
+  }
+
+  /* ── MODAL ── */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,0.72);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;padding:16px;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.3s ease;
+  }
+  .overlay.show{opacity:1;pointer-events:all}
+
+  .modal{
+    background:#fff;border-radius:24px;
+    max-width:460px;width:100%;
+    transform:scale(0.88) translateY(16px);
+    transition:transform 0.35s cubic-bezier(.4,0,.2,1);
+    max-height:92vh;overflow-y:auto;
+    color:#1C1C1E;
+  }
+  .overlay.show .modal{transform:scale(1) translateY(0)}
+
+  .modal-head{
+    background:linear-gradient(135deg,#1428A0 0%,#1D7EED 100%);
+    padding:28px 24px 22px;position:relative;
+  }
+  .modal-emoji{font-size:48px;margin-bottom:12px;display:block}
+  .modal-title{color:#fff;font-size:21px;font-weight:700;margin-bottom:5px}
+  .modal-sub{color:rgba(255,255,255,0.7);font-size:13px;line-height:1.5}
+  .close-btn{
+    position:absolute;top:14px;right:14px;
+    background:rgba(255,255,255,0.18);border:none;
+    color:#fff;width:34px;height:34px;border-radius:50%;
+    font-size:19px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background 0.2s;
+    font-family:var(--font);
+  }
+  .close-btn:hover{background:rgba(255,255,255,0.35)}
+
+  .modal-body{padding:20px 22px 26px}
+
+  .section-lbl{
+    font-size:10.5px;text-transform:uppercase;
+    letter-spacing:1.8px;font-weight:700;margin-bottom:8px;
+  }
+  .challenge-block .section-lbl{color:#C53030}
+  .ai-block .section-lbl{color:#1428A0}
+
+  .challenge-block{margin-bottom:16px}
+  .challenge-text{
+    background:#FFF5F5;border:1px solid #FED7D7;
+    border-radius:12px;padding:13px 15px;
+    font-size:14px;line-height:1.65;color:#333;
+  }
+  .ai-text{
+    background:var(--blue-pale);border:1px solid #C7D2FE;
+    border-radius:12px;padding:13px 15px;
+    font-size:14px;line-height:1.65;color:#333;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .chip{
+    background:var(--blue);color:#fff;
+    font-size:11px;font-weight:600;
+    padding:5px 12px;border-radius:20px;
+    letter-spacing:0.3px;
+  }
+
+  /* ── WIN SCREEN ── */
+  .win{
+    position:fixed;inset:0;
+    background:linear-gradient(140deg,#07091A 0%,#0D1B6E 60%,#1428A0 100%);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    z-index:2000;opacity:0;pointer-events:none;
+    transition:opacity 0.5s;
+    text-align:center;padding:32px;
+  }
+  .win.show{opacity:1;pointer-events:all}
+  .win-trophy{font-size:72px;margin-bottom:16px;animation:bob 1.2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .win h2{font-size:36px;font-weight:700;color:#fff;margin-bottom:8px}
+  .win p{color:rgba(255,255,255,0.65);font-size:16px;margin-bottom:28px}
+  .btn-restart{
+    background:#1428A0;color:#fff;border:none;
+    padding:15px 36px;border-radius:28px;
+    font-size:16px;font-weight:700;cursor:pointer;
+    font-family:var(--font);
+    transition:background 0.2s,transform 0.15s;
+  }
+  .btn-restart:hover{background:#1D7EED;transform:scale(1.04)}
+  .btn-restart:active{transform:scale(0.97)}
+
+  /* scrollbar */
+  .modal::-webkit-scrollbar{width:5px}
+  .modal::-webkit-scrollbar-track{background:transparent}
+  .modal::-webkit-scrollbar-thumb{background:#C7D2FE;border-radius:10px}
+
+  .info-box {
+    margin-top: 40px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05); /* Prozirna bijela na tamnoj pozadini */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    text-align: justify;
+    max-width: 580px;
+  }
+  
+  .info-box p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .info-box strong {
+    color: #6AB4FF; /* Isticanje ključnih riječi bojom tvojih linkova/naslova */
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="logo-row">
+    <div class="logo-dot"></div>
+    <span>Škola budućnosti · Samsung Challenge</span>
+    <div class="logo-dot"></div>
+  </div>
+  <h1>Budućnost bez<br><em>granica</em></h1>
+  <p>Spoji poteškoće s AI značajkama novih Galaxy uređaja i saznaj kako tehnologija mijenja svakodnevni život.</p>
+  <div class="badge">🎓 Elektrotehnička škola Zagreb</div>
+</header>
+
+<!-- GAME -->
+<main class="game-wrap">
+  <div class="score-bar">
+    <div class="stat"><div class="stat-val" id="moves">0</div><div class="stat-lbl">Potezi</div></div>
+    <div class="stat"><div class="stat-val" id="pairs">0/8</div><div class="stat-lbl">Parovi</div></div>
+    <div class="stat"><div class="stat-val" id="timer">00:00</div><div class="stat-lbl">Vrijeme</div></div>
+    <div class="stat"><div class="stat-val" id="global-wins">...</div><div class="stat-lbl">Završeno</div></div>
+  </div>
+  <div class="grid" id="grid" role="grid" aria-label="Memorijska igra 4x4"></div>
+
+  <div class="info-box">
+    <p>
+      Ova interaktivna memorijska igra kreirana je u sklopu projekta <strong>Škola budućnosti – Samsung Challenge</strong> kako bi pokazala kako tehnologija može postati most prema inkluzivnijem društvu. Kroz igru istražite stvarne izazove s kojima se susreću osobe s različitim poteškoćama te saznajte na koje načine <strong>Galaxy AI</strong> nudi inovativna rješenja za njihovo prevladavanje. Naš cilj je podići svijest o važnosti digitalne pristupačnosti i potaknuti mlade na razmišljanje o tehnologiji kao alatu za društveno dobro. Spajanjem parova otkrivate budućnost u kojoj inovacije brišu barijere i omogućuju svima život bez ograničenja.
+    </p>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <button class="close-btn" id="close-btn" aria-label="Zatvori">✕</button>
+      <span class="modal-emoji" id="m-icon" aria-hidden="true"></span>
+      <div class="modal-title" id="m-title"></div>
+      <div class="modal-sub" id="m-sub"></div>
+    </div>
+    <div class="modal-body">
+      <div class="challenge-block">
+        <div class="section-lbl">⚠ Poteškoća</div>
+        <div class="challenge-text" id="m-challenge"></div>
+      </div>
+      <div class="ai-block">
+        <div class="section-lbl">✦ Galaxy AI rješenje</div>
+        <div class="ai-text" id="m-ai"></div>
+        <div class="chips" id="m-chips"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN -->
+<div class="win" id="win-screen" aria-live="polite">
+  <div class="win-trophy" aria-hidden="true">🏆</div>
+  <h2>Bravo!</h2>
+  <p id="win-msg"></p>
+  <button class="btn-restart" onclick="startGame()">Igraj ponovo</button>
+</div>
+
+<script>
+// 1. Dohvaćanje trenutnog broja (da se vidi čim se stranica učita)
+const API_URL = "/api";
+
+async function fetchGlobalWins() {
+    const url = `${API_URL}/wins`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        // Ako ključ ne postoji, API će vratiti grešku, pa stavljamo 0
+        document.getElementById('global-wins').textContent = data.value || 0;
+    } catch (err) {
+        console.log("Ključ još nije kreiran ili API ne radi.");
+        document.getElementById('global-wins').textContent = '0';
+    }
+}
+
+// 2. Povećanje broja za +1 (poziva se u showWin funkciji)
+async function incrementGlobalWins() {
+    const url = `${API_URL}/hit`;
+    try {
+        const response = await fetch(url, { method: 'POST' });
+        const data = await response.json();
+        document.getElementById('global-wins').textContent = data.value;
+    } catch (err) {
+        console.error("Greška pri ažuriranju brojača:", err);
+    }
+}
+
+// Pozovi dohvaćanje odmah pri učitavanju skripte
+fetchGlobalWins();
+  const PAIRS = [
+    {
+      id: 1, icon: "👁", label: "Slabovidnost",
+      title: "Slabovidnost",
+      sub: "Oštećenje vida & čitanje sitnog teksta",
+      challenge: "Osobe s oštećenjem vida imaju poteškoća s čitanjem sitnog teksta, snalaženjem u prostoru i prepoznavanjem lica ili predmeta u svakodnevnom životu.",
+      ai: "Galaxy AI uz Accessibility Zoom i AI-powered Magnifier povećava sadržaj u stvarnom vremenu. Voice Assistant (TalkBack) čita tekst naglas, a kamera prepoznaje objekte i opisuje okolinu glasovnim porukama.",
+      chips: ["Magnifier AI", "Voice Assistant", "Live Translate", "Bixby Vision"]
+    },
+    {
+      id: 2, icon: "🦻", label: "Oštećenje sluha",
+      title: "Oštećenje sluha",
+      sub: "Komunikacijske barijere u svakodnevici",
+      challenge: "Gluhe i nagluhe osobe ne mogu čuti telefonske pozive, alarme, upozorenja ili govornu komunikaciju u javnim prostorima i na radnom mjestu.",
+      ai: "Live Transcribe pretvara govor u tekst u stvarnom vremenu s točnošću do 95 %. Sound Notifications prepoznaje važne zvukove poput alarma, plakanja bebe ili zvona na vratima te vibrira ili bljeska ekran.",
+      chips: ["Live Transcribe", "Sound Notify", "Flash Alert", "Interpreter Mode"]
+    },
+    {
+      id: 3, icon: "🧠", label: "Anksioznost",
+      title: "Anksioznost i mentalno zdravlje",
+      sub: "Upravljanje stresom i napadima panike",
+      challenge: "Mladi češće pate od anksioznosti, napada panike i stresa. Nedostatak alata za praćenje vlastitog stanja može dovesti do zanemarivanja mentalnog zdravlja.",
+      ai: "Galaxy Watch integriran s telefonom mjeri razinu stresa putem HRV senzora. AI kreira personalizirane planove disanja, a Wellbeing AI šalje podsjetnike za pauze i predlaže tehnike smirenja.",
+      chips: ["Stress Monitor", "Breathing AI", "Sleep Coach", "Wellbeing Hub"]
+    },
+    {
+      id: 4, icon: "🌍", label: "Jezična barijera",
+      title: "Jezična barijera",
+      sub: "Komunikacija u stranoj zemlji",
+      challenge: "Migranti, turisti i studenti u inozemstvu suočavaju se s jezičnom barijerom koja otežava svakodnevnu komunikaciju, traženje pomoći i razumijevanje dokumenata.",
+      ai: "Live Translate prevodi razgovor u stvarnom vremenu na 16 jezika bez internetske veze. Interpreter Mode omogućuje razgovor licem u lice putem telefon, a kamera s AI OCR-om čita i prevodi natpise u prostoru.",
+      chips: ["Live Translate", "Interpreter Mode", "Camera OCR", "Offline AI"]
+    },
+    {
+      id: 5, icon: "♿", label: "Motorička",
+      title: "Motorička oštećenja",
+      sub: "Ograničena pokretljivost ruku i prstiju",
+      challenge: "Osobe s motoričkim oštećenjima, artritisom ili paralizom imaju poteškoća s korištenjem dodirnog zaslona, pisanjem poruka i upravljanjem uređajem jednom rukom.",
+      ai: "Voice Access omogućuje potpuno upravljanje telefonom glasom. Navigacija praćenjem pogleda (Eye Tracking) prati pokrete oka za klik, a Switch Access i One-Hand Mode prilagođavaju sučelje korisnicima s ograničenom pokretljivošću.",
+      chips: ["Voice Control", "Eye Tracking", "Switch Access", "One-hand Mode"]
+    },
+    {
+      id: 6, icon: "📚", label: "Disleksija",
+      title: "Disleksija i teškoće čitanja",
+      sub: "Problemi s obradom pisanog teksta",
+      challenge: "Učenici s disleksijom imaju poteškoća s čitanjem, pisanjem i praćenjem nastave. Standardni udžbenici i digitalni sadržaji nisu prilagođeni njihovim potrebama.",
+      ai: "AI asistent pretvara tekst u govor s prirodnim glasom. Samsung Notes koristi Dyslexia-friendly fontove i povećan razmak redaka. Circle to Search omogućuje trenutno objašnjenje pojmova fotografiranjem teksta.",
+      chips: ["Text to Speech", "Dyslexie Font", "Circle to Search", "AI Summarize"]
+    },
+    {
+      id: 7, icon: "💊", label: "Kronična bolest",
+      title: "Kronična bolest & lijekovi",
+      sub: "Praćenje terapije i simptoma",
+      challenge: "Pacijenti s kroničnim bolestima trebaju redovito uzimati lijekove, pratiti vitalne znakove i komunicirati s liječnicima. Zaboravljanje terapije može biti opasno po zdravlje.",
+      ai: "Health Monitor AI prati EKG, razinu kisika u krvi i razinu šećera putem senzora Galaxy Watcha. Smart Reminder uči o navikama i podsjeća u pravo vrijeme, a AI Health Report sažima tjedne podatke za liječnika.",
+      chips: ["Health Monitor", "ECG Sensor", "Smart Reminder", "Health Report AI"]
+    },
+    {
+      id: 8, icon: "🏠", label: "Usamljenost",
+      title: "Socijalna izolacija & usamljenost",
+      sub: "Nedostatak socijalnih veza kod starijih",
+      challenge: "Starije osobe i mladi u ruralnim područjima suočavaju se s društvenom izolacijom. Manjak digitalnih vještina i tehnološke barijere sprječavaju ih u uspostavljanju kontakta s obitelji.",
+      ai: "Easy Mode smanjuje kompleksnost Samsung sučelja na minimum. AI asistent vodi korisnika kroz prve korake, a Family Sharing AI automatski dijeli fotografije i posebne trenutke s bliskim osobama.",
+      chips: ["Easy Mode", "AI Companion", "Family Share", "Video Call AI"]
+    }
+  ];
+
+  let board = [], flipped = [], matched = [], moves = 0, pairsFound = 0;
+  let timerInterval = null, seconds = 0, canFlip = true;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    // padStart osigurava da npr. 5 sekundi postane "05"
+    const mm = String(m).padStart(2, '0');
+    const ss = String(s).padStart(2, '0');
+    return `${mm}:${ss}`;
+}
+
+  function startGame() {
+    clearInterval(timerInterval);
+    gameComplete = false;
+    flipped = []; matched = []; moves = 0; pairsFound = 0; seconds = 0; canFlip = true;
+    document.getElementById('moves').textContent = '0';
+    document.getElementById('pairs').textContent = '0/8';
+    document.getElementById('timer').textContent = '00:00';
+    document.getElementById('win-screen').classList.remove('show');
+    board = shuffle([...PAIRS, ...PAIRS].map((p, i) => ({ ...p, uid: i })));
+    renderGrid();
+    timerInterval = setInterval(() => {
+      seconds++;
+      document.getElementById('timer').textContent = formatTime(seconds);
+    }, 1000);
+  }
+
+  function renderGrid() {
+    const g = document.getElementById('grid');
+    g.innerHTML = '';
+    board.forEach((card, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'card';
+      btn.setAttribute('aria-label', 'Kartica ' + (idx + 1));
+      btn.dataset.idx = idx;
+      btn.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <path d="M8 12h8M12 8v8"/>
+            </svg>
+          </div>
+          <div class="card-back">
+            <div class="card-icon" aria-hidden="true">${card.icon}</div>
+            <div class="card-label">${card.label}</div>
+          </div>
+        </div>`;
+      btn.addEventListener('click', () => flipCard(idx));
+      g.appendChild(btn);
+    });
+  }
+  let gameComplete = false;
+
+function flipCard(idx) {
+  if (!canFlip) return;
+  if (flipped.includes(idx)) return;
+  if (matched.includes(board[idx].id)) return;
+  const cards = document.querySelectorAll('.card');
+  cards[idx].classList.add('flipped');
+  flipped.push(idx);
+  if (flipped.length === 2) {
+    canFlip = false;
+    moves++;
+    document.getElementById('moves').textContent = moves;
+    const [a, b] = [board[flipped[0]], board[flipped[1]]];
+    if (a.id === b.id) {
+      matched.push(a.id);
+      pairsFound++;
+      const pair = a.id;
+      document.getElementById('pairs').textContent = pairsFound + '/8';
+      setTimeout(() => {
+        cards[flipped[0]].classList.add('matched');
+        cards[flipped[1]].classList.add('matched');
+        showModal(a);
+        flipped = [];
+        canFlip = true;
+
+        // Check if all pairs are found
+        if (pairsFound === 8) {
+          gameComplete = true;  // Mark the game as complete
+        }
+      }, 400);
+    } else {
+      setTimeout(() => {
+        cards[flipped[0]].classList.remove('flipped');
+        cards[flipped[1]].classList.remove('flipped');
+        flipped = [];
+        canFlip = true;
+      }, 950);
+    }
+  }
+}
+
+function showModal(pair) {
+  document.getElementById('m-icon').textContent = pair.icon;
+  document.getElementById('m-title').textContent = pair.title;
+  document.getElementById('m-sub').textContent = pair.sub;
+  document.getElementById('m-challenge').textContent = pair.challenge;
+  document.getElementById('m-ai').textContent = pair.ai;
+  document.getElementById('m-chips').innerHTML = pair.chips
+    .map(c => `<span class="chip">${c}</span>`).join('');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  
+  // Show win screen if the game is complete
+  if (gameComplete) {
+    showWin();
+  }
+}
+
+document.getElementById('close-btn').addEventListener('click', closeModal);
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+  function showWin() {
+    clearInterval(timerInterval);
+    const finalTime = formatTime(seconds);
+    document.getElementById('win-msg').textContent =
+      `Završili ste za ${finalTime} s ${moves} poteza!`;
+    document.getElementById('win-screen').classList.add('show');
+
+    incrementGlobalWins();
+  }
+
+  startGame();
+</script>
+</body>
+</html>
